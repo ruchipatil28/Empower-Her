@@ -1,0 +1,490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Loan Repayment - EmpowerHer</title>
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="View your active loan repayment schedule, split monthly installments, make secure online payments, and review statements.">
+  
+  <!-- Styling -->
+  <link rel="stylesheet" href="global.css">
+  <link rel="stylesheet" href="navbar.css">
+  <link rel="stylesheet" href="payment.css">
+  
+  <!-- Razorpay Checkout SDK -->
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo">
+        <img src="Empower her.png" alt="EmpowerHer Logo">
+        <span>EmpowerHer</span>
+      </a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle Navigation">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </button>
+      <ul class="nav-menu" id="navMenu">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="About.html" class="nav-link">About</a></li>
+        <li><a href="Process.html" class="nav-link">Process</a></li>
+        <li><a href="Stories.html" class="nav-link">Stories</a></li>
+        <li id="nav-auth-container"><a href="login.html" class="btn-login">Log In</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="payment-hero">
+    <div class="hero-inner">
+      <span class="badge-tag">Repayment Portal</span>
+      <h1>Repayment Schedule</h1>
+      <p>Manage your microloan installments, customize payment frequencies, and track payments.</p>
+    </div>
+  </section>
+
+  <!-- Dashboard Ledger Grid -->
+  <div class="container repayment-grid">
+    <!-- Active Repayment Ledger Card -->
+    <div class="card schedule-card glass-card">
+      <h2 id="loanTitle">Repayment Schedule</h2>
+      <p id="loanSubtitle" style="color:var(--text-muted); font-size:0.92rem; margin-bottom: 2rem;">Lender: - | Total Loan: - | Installments: -</p>
+      
+      <div class="table-wrap">
+        <table id="installmentTable" class="dashboard-table">
+          <thead>
+            <tr>
+              <th>Month</th>
+              <th>Due Date</th>
+              <th>Repayment Term</th>
+              <th>Status</th>
+              <th>Action</th>
+            </tr>
+          </thead>
+          <tbody id="installmentTableBody">
+            <!-- Dynamically populated or split -->
+          </tbody>
+        </table>
+      </div>
+
+      <button class="passbook-btn pulse-glow-anim" id="openPassbookBtn">🏦 Print Account Statement (Passbook)</button>
+    </div>
+
+    <!-- Right Side Stats Panel -->
+    <aside class="side-panel">
+      <div class="stats-cards-vertical">
+        <div class="stat-card glass-card">
+          <div class="stat-number" id="totalLoanVal">₹0</div>
+          <div class="stat-label">Total Principal</div>
+        </div>
+        <div class="stat-card glass-card">
+          <div class="stat-number" id="interestVal">₹0</div>
+          <div class="stat-label">Total Interest (4%)</div>
+        </div>
+        <div class="stat-card glass-card">
+          <div class="stat-number" id="paidVal">₹0</div>
+          <div class="stat-label">Amount Repaid</div>
+        </div>
+        <div class="stat-card glass-card outstanding">
+          <div class="stat-number" id="outstandingVal">₹0</div>
+          <div class="stat-label" style="color:#f3e8ff;">Outstanding Bal</div>
+        </div>
+      </div>
+    </aside>
+  </div>
+
+  <!-- Passbook Statement Modal -->
+  <div class="modal" id="passbookModal">
+    <div class="modal-content glass-card passbook-card">
+      <span class="close-btn" id="closePassbookBtn">&times;</span>
+      <div class="passbook-header">
+        <div class="logo-box-pass">
+          <img src="Empower her.png" alt="EmpowerHer Logo">
+          <span>EmpowerHer Bank</span>
+        </div>
+        <p style="margin:2px 0; font-size: 13px;">Branch: Mumbai Central | Microfinance Account Ledger</p>
+        <h4 style="margin: 10px 0; text-transform:uppercase; letter-spacing:0.05em; color:var(--primary);">Passbook Statement</h4>
+      </div>
+
+      <div class="table-wrap">
+        <table id="passbookTable" class="passbook-table">
+          <thead>
+            <tr>
+              <th>Date</th>
+              <th>Description</th>
+              <th>Debit (₹)</th>
+              <th>Credit (₹)</th>
+              <th>Balance (₹)</th>
+            </tr>
+          </thead>
+          <tbody id="passbookTableBody">
+            <!-- Dynamic transactions -->
+          </tbody>
+        </table>
+      </div>
+      <div style="text-align:center; margin-top:20px; font-size:12px; color:var(--text-muted); font-family:monospace;">--- End of Statement ---</div>
+    </div>
+  </div>
+
+  <!-- Repayment Fallback Modal (In case Razorpay fails or runs offline) -->
+  <div class="modal" id="paymentFallbackModal">
+    <div class="modal-content glass-card payment-checkout-panel">
+      <span class="close-btn" id="closePaymentBtn">&times;</span>
+      <h3>Repayment Gateway</h3>
+      <p style="margin-bottom: 1.5rem; font-size: 0.9rem; color:var(--text-muted);">Confirm your installment payment amount</p>
+      
+      <div class="payment-details-summary">
+        <p><strong>Payment To:</strong> EmpowerHer Trust Foundation</p>
+        <p><strong>Venture Account:</strong> <span id="checkoutVenture">-</span></p>
+        <p><strong>Installment Amount:</strong> <strong style="color:var(--primary)" id="checkoutAmount">-</strong></p>
+      </div>
+
+      <div class="payment-mock-form" style="text-align: left; margin-top: 1.5rem;">
+        <label style="font-size: 0.8rem; font-weight:700; color:var(--primary-dark); display:block; margin-bottom:0.5rem;">SELECT PAYMENT CHANNEL</label>
+        <div class="payment-channel">
+          <span> UPI / Cards / Net Banking</span>
+        </div>
+        <p style="font-size: 0.75rem; color:var(--text-muted); margin-top: 0.5rem;">Offline mode enabled. Simulated payment dispatches immediately.</p>
+      </div>
+
+      <div class="modal-buttons" style="margin-top: 2rem;">
+        <button class="btn-primary" id="confirmPaymentBtn" style="width: 100%;">Authorize Payment</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Core Scripts -->
+  <script src="store.js"></script>
+  <script src="navbar.js"></script>
+
+  <!-- Interactive Ledgers Script -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // 1. Guard check: Must be user
+      if (window.EH_DB) {
+        const currentUser = window.EH_DB.getCurrentUser();
+        if (!currentUser) {
+          alert("Access Denied: Please log in first.");
+          window.location.href = "login.html?role=user";
+          return;
+        } else if (currentUser.role !== "user") {
+          alert("Access Denied: Entrepreneur access portal only.");
+          window.location.href = "login.html?role=user";
+          return;
+        }
+      }
+
+      let activeRepay = null;
+      let targetPaymentRow = null;
+      let targetPaymentAmount = 0;
+      let targetPaymentDate = "";
+
+      // 2. Fetch loan information
+      function loadLoanRepayments() {
+        const repays = localStorage.getItem("eh_repayments") ? JSON.parse(localStorage.getItem("eh_repayments")) : [];
+        const currentUser = window.EH_DB.getCurrentUser();
+        
+        // Find matching active loan repayment schedule
+        const currentName = (currentUser.name || "").toLowerCase();
+        activeRepay = repays.find(r => r.applicantName.toLowerCase() === currentName);
+
+        // Fallback: try to create one from the funded application if none exists
+        if (!activeRepay) {
+          const apps = window.EH_DB.getApplications();
+          const fundedApp = apps.find(a => a.status === "funded" && a.name.toLowerCase() === currentName);
+          if (fundedApp) {
+            activeRepay = {
+              id: "repay_" + fundedApp.id,
+              applicantName: fundedApp.name,
+              ventureName: fundedApp.idea,
+              investorName: fundedApp.investorName || "Platform Lenders",
+              amount: fundedApp.funds,
+              interest: Math.round(fundedApp.funds * 0.04),
+              paid: 0,
+              installments: []
+            };
+            // Save to localStorage for future sessions
+            const allRepays = window.EH_DB.getRepayments();
+            allRepays.push(activeRepay);
+            window.EH_DB.saveRepayments(allRepays);
+          }
+        }
+
+        if (!activeRepay) {
+          // If no active loan, show informative message or redirect
+          alert("You do not have any active loans with outstanding repayments.\n\nPlease apply for a microloan and wait for investor funding first.");
+          window.location.href = "applications.html";
+          return;
+        }
+
+        renderRepayments();
+      }
+
+      // 3. Render Table
+      function renderRepayments() {
+        if (!activeRepay) return;
+
+        // Set Headers
+        document.getElementById("loanTitle").innerText = `Repayment Schedule – ${activeRepay.ventureName}`;
+        document.getElementById("loanSubtitle").innerText = `Lender: ${activeRepay.investorName || "Platform Lenders"} | Total Principal: ₹${activeRepay.amount.toLocaleString()} | Interest: ₹${activeRepay.interest.toLocaleString()}`;
+
+        // Render Stats
+        const totalPrincipal = activeRepay.amount;
+        const totalInterest = activeRepay.interest;
+        const totalPaid = activeRepay.paid;
+        const outstanding = (totalPrincipal + totalInterest) - totalPaid;
+
+        document.getElementById("totalLoanVal").innerText = `₹${totalPrincipal.toLocaleString()}`;
+        document.getElementById("interestVal").innerText = `₹${totalInterest.toLocaleString()}`;
+        document.getElementById("paidVal").innerText = `₹${totalPaid.toLocaleString()}`;
+        document.getElementById("outstandingVal").innerText = `₹${outstanding.toLocaleString()}`;
+
+        // Render Installments Rows
+        const tbody = document.getElementById("installmentTableBody");
+        tbody.innerHTML = "";
+
+        // Standard 10 installment schedule simulation
+        const installmentAmount = Math.round(totalPrincipal / 10);
+        const months = ["Aug 2025", "Sep 2025", "Oct 2025", "Nov 2025", "Dec 2025", "Jan 2026", "Feb 2026", "Mar 2026", "Apr 2026", "May 2026"];
+        
+        let cumulativePaid = 0;
+        let activeRowFound = false;
+
+        months.forEach((month, idx) => {
+          const expectedPaidByThisMonth = (idx + 1) * installmentAmount;
+          let rowStatus = "Pending";
+          let actionBtnHTML = "";
+
+          if (totalPaid >= expectedPaidByThisMonth) {
+            rowStatus = "Paid";
+            actionBtnHTML = `—`;
+          } else if (!activeRowFound) {
+            rowStatus = "Pending";
+            activeRowFound = true;
+            actionBtnHTML = `
+              <select class="term-select" onchange="splitInstallment(this, ${installmentAmount}, '${month}', ${idx})">
+                <option value="${installmentAmount}">Monthly - ₹${installmentAmount.toLocaleString()}</option>
+                <option value="${Math.round(installmentAmount/4)}">Weekly - ₹${Math.round(installmentAmount/4).toLocaleString()}</option>
+              </select>
+              <button class="btn-action pay-now-btn" data-amount="${installmentAmount}" data-date="30 ${month}" data-index="${idx}">Pay Now</button>
+            `;
+          } else {
+            rowStatus = "Pending";
+            actionBtnHTML = `<button class="btn-action" disabled>Pay Now</button>`;
+          }
+
+          const tr = document.createElement("tr");
+          if (rowStatus === "Pending" && activeRowFound && actionBtnHTML !== "—" && !actionBtnHTML.includes("disabled")) {
+            tr.className = "activeInstallmentRow";
+          }
+
+          tr.innerHTML = `
+            <td>Month ${idx + 1} (${month})</td>
+            <td>30 ${month}</td>
+            <td>${actionBtnHTML.includes("select") ? actionBtnHTML.split("<button")[0] : `₹${installmentAmount.toLocaleString()}`}</td>
+            <td><span class="status-badge ${rowStatus.toLowerCase()}">${rowStatus}</span></td>
+            <td>${actionBtnHTML.includes("<button") ? "<button" + actionBtnHTML.split("<button")[1] : actionBtnHTML}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+
+        // Attach action listeners
+        tbody.querySelectorAll(".pay-now-btn").forEach(btn => {
+          btn.addEventListener("click", () => {
+            const amount = parseInt(btn.getAttribute("data-amount"));
+            const date = btn.getAttribute("data-date");
+            triggerPaymentFlow(amount, date, btn.closest("tr"));
+          });
+        });
+
+        renderPassbook();
+      }
+
+      // 4. Split Installments UI
+      window.splitInstallment = function(selectElem, monthlyAmount, monthLabel, monthIndex) {
+        const row = selectElem.closest("tr");
+        const tbody = row.parentElement;
+        const rowIndex = row.rowIndex - 1;
+        const weeklyAmount = Math.round(monthlyAmount / 4);
+
+        if (selectElem.value == weeklyAmount) {
+          // Remove old row
+          tbody.removeChild(row);
+          
+          // Insert 4 weekly rows
+          const dates = ['07', '14', '21', '28'];
+          for (let i = 0; i < 4; i++) {
+            const newRow = tbody.insertRow(rowIndex + i);
+            newRow.className = (i === 0) ? "activeInstallmentRow" : "";
+            newRow.innerHTML = `
+              <td>Month ${monthIndex + 1} (${monthLabel}) - Wk ${i+1}</td>
+              <td>${dates[i]} ${monthLabel}</td>
+              <td>₹${weeklyAmount.toLocaleString()}</td>
+              <td><span class="status-badge pending">Pending</span></td>
+              <td>
+                <button class="btn-action pay-now-btn" ${i > 0 ? 'disabled' : ''} data-amount="${weeklyAmount}" data-date="${dates[i]} ${monthLabel}" data-index="${monthIndex}">Pay Now</button>
+              </td>
+            `;
+          }
+
+          // Re-attach listener on the new weekly active button
+          tbody.querySelectorAll(".pay-now-btn").forEach(btn => {
+            btn.addEventListener("click", () => {
+              const amount = parseInt(btn.getAttribute("data-amount"));
+              const date = btn.getAttribute("data-date");
+              triggerPaymentFlow(amount, date, btn.closest("tr"));
+            });
+          });
+        }
+      };
+
+      // 5. Payment flow with fallback triggers
+      function triggerPaymentFlow(amount, date, row) {
+        targetPaymentRow = row;
+        targetPaymentAmount = amount;
+        targetPaymentDate = date;
+
+        const options = {
+          "key": "rzp_test_RLmXTaKzm3Fev0",
+          "amount": amount * 100,
+          "currency": "INR",
+          "name": "EmpowerHer Foundation",
+          "description": "Installment Microloan Repayment",
+          "handler": function (response) {
+            completePaymentTransaction(response.razorpay_payment_id || "pay_razorpay_mock");
+          },
+          "prefill": {
+            "name": activeRepay.applicantName,
+            "email": "entrepreneur@example.com",
+            "contact": "9876543210"
+          },
+          "theme": { "color": "#6d28d9" }
+        };
+
+        try {
+          if (typeof Razorpay !== "undefined") {
+            const rzp = new Razorpay(options);
+            rzp.open();
+          } else {
+            throw new Error("Razorpay SDK not loaded");
+          }
+        } catch (err) {
+          // Open custom glassmorphism payment checkout modal fallback
+          openPaymentFallbackModal(amount);
+        }
+      }
+
+      // 6. Custom Modal triggers
+      const paymentFallbackModal = document.getElementById("paymentFallbackModal");
+      const closePaymentBtn = document.getElementById("closePaymentBtn");
+
+      function openPaymentFallbackModal(amount) {
+        document.getElementById("checkoutVenture").innerText = activeRepay.ventureName;
+        document.getElementById("checkoutAmount").innerText = `₹${amount.toLocaleString()}`;
+        paymentFallbackModal.classList.add("active");
+      }
+
+      closePaymentBtn.addEventListener("click", () => {
+        paymentFallbackModal.classList.remove("active");
+      });
+
+      document.getElementById("confirmPaymentBtn").addEventListener("click", () => {
+        paymentFallbackModal.classList.remove("active");
+        completePaymentTransaction("pay_mock_local_" + Math.random().toString(36).substr(2, 9));
+      });
+
+      // 7. Complete Payment & Log Statement
+      function completePaymentTransaction(paymentId) {
+        const repays = localStorage.getItem("eh_repayments") ? JSON.parse(localStorage.getItem("eh_repayments")) : [];
+        const index = repays.findIndex(r => r.id === activeRepay.id);
+
+        if (index > -1) {
+          const currentRepay = repays[index];
+          const newPaidVal = currentRepay.paid + targetPaymentAmount;
+          currentRepay.paid = newPaidVal;
+
+          // Compute balance outstanding
+          const principalAndInterest = currentRepay.amount + currentRepay.interest;
+          const currentBalance = principalAndInterest - newPaidVal;
+
+          // Append to passbook statement installments
+          currentRepay.installments.push({
+            date: targetPaymentDate,
+            desc: "Installment Repayment",
+            debit: "-",
+            credit: targetPaymentAmount,
+            balance: currentBalance
+          });
+
+          // Save back
+          repays[index] = currentRepay;
+          localStorage.setItem("eh_repayments", JSON.stringify(repays));
+
+          alert(`Payment Successful!\nTransaction ID: ${paymentId}\n₹${targetPaymentAmount.toLocaleString()} credited to your loan ledger.`);
+          
+          loadLoanRepayments();
+        }
+      }
+
+      // 8. Render Passbook Table
+      const passbookModal = document.getElementById("passbookModal");
+      const openPassbookBtn = document.getElementById("openPassbookBtn");
+      const closePassbookBtn = document.getElementById("closePassbookBtn");
+
+      function renderPassbook() {
+        if (!activeRepay) return;
+
+        const tbody = document.getElementById("passbookTableBody");
+        tbody.innerHTML = "";
+
+        // First row is always loan disbursement debit
+        const trDisburse = document.createElement("tr");
+        trDisburse.innerHTML = `
+          <td>01 Aug 2025</td>
+          <td>Loan Disbursed</td>
+          <td>₹${activeRepay.amount.toLocaleString()}</td>
+          <td>-</td>
+          <td>₹${(activeRepay.amount + activeRepay.interest).toLocaleString()}</td>
+        `;
+        tbody.appendChild(trDisburse);
+
+        // Render credit installments
+        activeRepay.installments.forEach(inst => {
+          const tr = document.createElement("tr");
+          tr.innerHTML = `
+            <td>${inst.date}</td>
+            <td>${inst.desc}</td>
+            <td>${inst.debit}</td>
+            <td>₹${inst.credit.toLocaleString()}</td>
+            <td>₹${inst.balance.toLocaleString()}</td>
+          `;
+          tbody.appendChild(tr);
+        });
+      }
+
+      openPassbookBtn.addEventListener("click", () => {
+        passbookModal.classList.add("active");
+      });
+
+      closePassbookBtn.addEventListener("click", () => {
+        passbookModal.classList.remove("active");
+      });
+
+      // Close modal on outside click
+      window.onclick = function (e) {
+        if (e.target == passbookModal) {
+          passbookModal.classList.remove("active");
+        } else if (e.target == paymentFallbackModal) {
+          paymentFallbackModal.classList.remove("active");
+        }
+      };
+
+      loadLoanRepayments();
+    });
+  </script>
+</body>
+</html>

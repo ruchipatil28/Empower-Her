@@ -1,0 +1,145 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sign Up - EmpowerHer</title>
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Join EmpowerHer as an entrepreneur seeking funding or an investor looking to support women-led microbusinesses.">
+  
+  <!-- Styling -->
+  <link rel="stylesheet" href="global.css">
+  <link rel="stylesheet" href="navbar.css">
+  <link rel="stylesheet" href="signup.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo">
+        <img src="Empower her.png" alt="EmpowerHer Logo">
+        <span>EmpowerHer</span>
+      </a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle Navigation">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </button>
+      <ul class="nav-menu" id="navMenu">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="About.html" class="nav-link">About</a></li>
+        <li><a href="Process.html" class="nav-link">Process</a></li>
+        <li><a href="Stories.html" class="nav-link">Stories</a></li>
+        <li id="nav-auth-container"><a href="login.html" class="btn-login">Log In</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Signup Section -->
+  <section class="signup-section">
+    <div class="signup-wrapper">
+      <div class="signup-box glass-card">
+        <h2>Create an Account</h2>
+        <p>Register as an entrepreneur or an investor to join the platform</p>
+
+        <!-- Custom Role Tabs -->
+        <div class="role-selector-tabs">
+          <div class="role-tab active" data-role="user">
+            <span class="role-icon">👩‍💼</span>
+            <span>Entrepreneur</span>
+          </div>
+          <div class="role-tab" data-role="investor">
+            <span class="role-icon">🤝</span>
+            <span>Investor</span>
+          </div>
+        </div>
+
+        <form id="signupForm">
+          <input type="hidden" name="role" id="selectedRole" value="user">
+
+          <div class="input-group">
+            <label for="fullname">Full Name</label>
+            <input type="text" id="fullname" name="fullname" placeholder="e.g. Sania Sen" required>
+          </div>
+
+          <div class="input-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" placeholder="e.g. name@example.com" required>
+          </div>
+
+          <div class="input-group">
+            <label for="password">Password</label>
+            <input type="password" id="password" name="password" placeholder="Create a strong password" required>
+          </div>
+
+          <div class="input-group">
+            <label for="confirmPassword">Confirm Password</label>
+            <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Repeat your password" required>
+          </div>
+
+          <div class="terms-checkbox">
+            <input type="checkbox" id="agree" required>
+            <label for="agree">I agree to the Terms of Service & Privacy Policy</label>
+          </div>
+
+          <button type="submit" class="btn-primary w-full">Register Account</button>
+        </form>
+
+        <p class="login-link">Already have an account? <a href="login.html">Log In</a></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Core Scripts -->
+  <script src="store.js"></script>
+  <script src="navbar.js"></script>
+
+  <!-- Form Submission and Dynamic Interactivity -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const tabs = document.querySelectorAll(".role-tab");
+      const hiddenInput = document.getElementById("selectedRole");
+
+      // Custom Tab Click Handling
+      tabs.forEach(tab => {
+        tab.addEventListener("click", () => {
+          tabs.forEach(t => t.classList.remove("active"));
+          tab.classList.add("active");
+          hiddenInput.value = tab.getAttribute("data-role");
+        });
+      });
+
+      // Submit Form
+      document.getElementById("signupForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+
+        const name = document.getElementById("fullname").value.trim();
+        const email = document.getElementById("email").value.trim();
+        const role = hiddenInput.value;
+        const password = document.getElementById("password").value;
+        const confirmPassword = document.getElementById("confirmPassword").value;
+
+        if (password !== confirmPassword) {
+          alert("Passwords do not match!");
+          return;
+        }
+
+        if (window.EH_DB) {
+          const users = window.EH_DB.getUsers();
+          const exists = users.some(u => u.email.toLowerCase() === email.toLowerCase());
+
+          if (exists) {
+            alert("An account with this email address already exists.");
+            return;
+          }
+
+          // Register
+          window.EH_DB.addUser({ email, name, role });
+          alert("Registration Successful!\nPlease log in to continue.");
+          window.location.href = `login.html?role=${role}`;
+        }
+      });
+    });
+  </script>
+</body>
+</html>

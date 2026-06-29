@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login - EmpowerHer</title>
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Access your EmpowerHer dashboard. Log in as an entrepreneur, investor, or administrator.">
+  
+  <!-- Styling -->
+  <link rel="stylesheet" href="global.css">
+  <link rel="stylesheet" href="navbar.css">
+  <link rel="stylesheet" href="login.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo">
+        <img src="Empower her.png" alt="EmpowerHer Logo">
+        <span>EmpowerHer</span>
+      </a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle Navigation">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </button>
+      <ul class="nav-menu" id="navMenu">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="About.html" class="nav-link">About</a></li>
+        <li><a href="Process.html" class="nav-link">Process</a></li>
+        <li><a href="Stories.html" class="nav-link">Stories</a></li>
+        <li id="nav-auth-container"><a href="login.html" class="btn-login">Log In</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Login Section -->
+  <section class="login-section">
+    <div class="login-wrapper">
+      <div class="login-box glass-card">
+        <h2>Welcome Back</h2>
+        <p>Access your portal dashboard by choosing your role below</p>
+
+        <!-- Role Selector Custom Tabs -->
+        <div class="role-selector-tabs">
+          <div class="role-tab active" data-role="user">
+            <span class="role-icon">👩‍💼</span>
+            <span>Entrepreneur</span>
+          </div>
+          <div class="role-tab" data-role="investor">
+            <span class="role-icon">🤝</span>
+            <span>Investor</span>
+          </div>
+          <div class="role-tab" data-role="admin">
+            <span class="role-icon">⚙️</span>
+            <span>Admin</span>
+          </div>
+        </div>
+
+        <!-- Hidden Radio Inputs for Form State -->
+        <form id="loginForm">
+          <input type="hidden" name="role" id="selectedRole" value="user">
+          
+          <div class="input-group">
+            <label for="email">Email Address</label>
+            <input type="email" id="email" name="email" placeholder="e.g. user@example.com" required>
+          </div>
+          
+          <div class="input-group">
+            <div class="label-wrapper">
+              <label for="password">Password</label>
+              <a href="#" class="forgot-link">Forgot?</a>
+            </div>
+            <input type="password" id="password" name="password" placeholder="Enter your password" required>
+          </div>
+
+          <button type="submit" class="btn-primary w-full">Sign In</button>
+        </form>
+
+        <div class="divider">
+          <span>or continue with</span>
+        </div>
+
+        <!-- Google Login -->
+        <button class="google-btn" type="button" id="googleLoginBtn">
+          <img src="google logo.webp" alt="Google Logo"> 
+          <span>Google</span>
+        </button>
+
+        <p class="signup-link">Don't have an account? <a href="signup.html">Sign Up</a></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Core Scripts -->
+  <script src="store.js"></script>
+  <script src="navbar.js"></script>
+  
+  <!-- Page Interactivity Script -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // 1. Check URL parameters to pre-select role if coming from footer links
+      const urlParams = new URLSearchParams(window.location.search);
+      const urlRole = urlParams.get('role');
+      
+      const tabs = document.querySelectorAll(".role-tab");
+      const hiddenInput = document.getElementById("selectedRole");
+      const emailInput = document.getElementById("email");
+      const passwordInput = document.getElementById("password");
+
+      function selectRole(role) {
+        tabs.forEach(t => {
+          if (t.getAttribute("data-role") === role) {
+            t.classList.add("active");
+          } else {
+            t.classList.remove("active");
+          }
+        });
+        hiddenInput.value = role;
+
+        // Auto-fill demo credentials to help testing
+        if (role === "user") {
+          emailInput.value = "user@example.com";
+          passwordInput.value = "password";
+        } else if (role === "investor") {
+          emailInput.value = "investor@example.com";
+          passwordInput.value = "password";
+        } else if (role === "admin") {
+          emailInput.value = "admin@example.com";
+          passwordInput.value = "password";
+        }
+      }
+
+      // Pre-select role if URL has role
+      if (urlRole && ["user", "investor", "admin"].includes(urlRole)) {
+        selectRole(urlRole);
+      } else {
+        // Trigger initial default credentials fill
+        selectRole("user");
+      }
+
+      // Role tabs click handler
+      tabs.forEach(tab => {
+        tab.addEventListener("click", () => {
+          const role = tab.getAttribute("data-role");
+          selectRole(role);
+        });
+      });
+
+      // Submit Form logic
+      document.getElementById("loginForm").addEventListener("submit", function(event) {
+        event.preventDefault();
+        const role = hiddenInput.value;
+        const email = emailInput.value.trim();
+
+        if (window.EH_DB) {
+          const users = window.EH_DB.getUsers();
+          let loggedInUser = users.find(u => u.email.toLowerCase() === email.toLowerCase());
+
+          // Fallback registration for convenience if testing with other emails
+          if (!loggedInUser) {
+            loggedInUser = {
+              email: email,
+              name: email.split("@")[0].charAt(0).toUpperCase() + email.split("@")[0].slice(1),
+              role: role
+            };
+            window.EH_DB.addUser(loggedInUser);
+          }
+
+          // Force correct role selected
+          loggedInUser.role = role;
+          window.EH_DB.setCurrentUser(loggedInUser);
+
+          // Redirect
+          if (role === "user") {
+            window.location.href = "applications.html";
+          } else if (role === "investor") {
+            window.location.href = "investor.html";
+          } else if (role === "admin") {
+            window.location.href = "admin.html";
+          }
+        }
+      });
+
+      // Mock Google Login click
+      document.getElementById("googleLoginBtn").addEventListener("click", () => {
+        alert("Google authentication is mocked. Access is enabled through the primary login form.");
+      });
+    });
+  </script>
+</body>
+</html>

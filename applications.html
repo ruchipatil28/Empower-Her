@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Apply for Microfinance - EmpowerHer</title>
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Submit your small business proposal, upload a video pitch, and request microloans on the EmpowerHer portal.">
+  
+  <!-- Styling -->
+  <link rel="stylesheet" href="global.css">
+  <link rel="stylesheet" href="navbar.css">
+  <link rel="stylesheet" href="applications.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo">
+        <img src="Empower her.png" alt="EmpowerHer Logo">
+        <span>EmpowerHer</span>
+      </a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle Navigation">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </button>
+      <ul class="nav-menu" id="navMenu">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="About.html" class="nav-link">About</a></li>
+        <li><a href="Process.html" class="nav-link">Process</a></li>
+        <li><a href="Stories.html" class="nav-link">Stories</a></li>
+        <li id="nav-auth-container"><a href="login.html" class="btn-login">Log In</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="applications-hero">
+    <div class="hero-inner">
+      <span class="badge-tag">Entrepreneur Portal</span>
+      <h1>Apply for Microfinance</h1>
+      <p>Submit your business proposal, verify your identity, and pitching your idea directly to micro-investors.</p>
+    </div>
+  </section>
+
+  <!-- Dashboard Overview / Application Status -->
+  <section class="user-dashboard-summary" id="appStatusSection" style="display:none;">
+    <div class="dashboard-container">
+      <div class="glass-card status-summary-card">
+        <div class="card-header-flex">
+          <h2>Application Status</h2>
+          <span class="status-badge" id="appStatusBadge">Pending</span>
+        </div>
+        <div class="status-details">
+          <div class="detail-row"><strong>Business Idea:</strong> <span id="appDetailIdea">-</span></div>
+          <div class="detail-row"><strong>Required Funds:</strong> <span id="appDetailFunds">-</span></div>
+          <div class="detail-row"><strong>Lender/Investor:</strong> <span id="appDetailInvestor">None</span></div>
+          <div class="detail-row"><strong>Applied On:</strong> <span id="appDetailDate">-</span></div>
+        </div>
+        <div class="status-actions" id="appStatusActions">
+          <!-- Dynamically filled with repayment button if funded -->
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Application Wizard Section -->
+  <section class="application-form-section" id="formSection">
+    <div class="form-container glass-card">
+      
+      <!-- Wizard Progress Indicators -->
+      <div class="form-progress">
+        <div class="progress-step active" data-step="1">
+          <span class="step-num">1</span>
+          <span class="step-lbl">Personal</span>
+        </div>
+        <div class="progress-line"></div>
+        <div class="progress-step" data-step="2">
+          <span class="step-num">2</span>
+          <span class="step-lbl">Pitch Details</span>
+        </div>
+        <div class="progress-line"></div>
+        <div class="progress-step" data-step="3">
+          <span class="step-num">3</span>
+          <span class="step-lbl">Documents</span>
+        </div>
+      </div>
+
+      <!-- Multi-step Form -->
+      <form id="multiStepForm">
+        
+        <!-- Step 1: Personal Info -->
+        <div class="form-step-content active" id="step1">
+          <h2>Personal Details</h2>
+          <p class="step-desc">Provide your basic contact information and region</p>
+          
+          <div class="input-group">
+            <label for="fullName">Full Name</label>
+            <input type="text" id="fullName" placeholder="e.g. Sania Sen" required>
+          </div>
+          
+          <div class="form-row-grid">
+            <div class="input-group">
+              <label for="age">Age</label>
+              <input type="number" id="age" min="18" max="100" placeholder="e.g. 30" required>
+            </div>
+            <div class="input-group">
+              <label for="location">Location (State)</label>
+              <input type="text" id="location" placeholder="e.g. West Bengal" required>
+            </div>
+          </div>
+
+          <div class="form-buttons">
+            <button type="button" class="btn-primary next-step-btn" data-next="2">Next Step &rarr;</button>
+          </div>
+        </div>
+
+        <!-- Step 2: Pitch Details -->
+        <div class="form-step-content" id="step2">
+          <h2>Venture & Funding Pitch</h2>
+          <p class="step-desc">Tell us about your business idea and the capital required</p>
+
+          <div class="input-group">
+            <label for="businessIdea">Business Venture Name / Idea</label>
+            <input type="text" id="businessIdea" placeholder="e.g. Organic Tailoring Boutique" required>
+          </div>
+
+          <div class="input-group">
+            <label for="fundsNeeded">Required Capital (INR)</label>
+            <input type="number" id="fundsNeeded" min="5000" max="500000" placeholder="e.g. 50000" required>
+          </div>
+
+          <div class="input-group">
+            <label>Upload Business Video Pitch</label>
+            <div class="file-upload-zone" id="videoZone">
+              <span class="upload-icon">🎬</span>
+              <p>Drag and drop your pitch video here, or <span class="upload-link">browse</span></p>
+              <input type="file" id="businessVideo" accept="video/*" style="display:none;">
+            </div>
+            <video id="videoPreview" controls style="display:none; margin-top:1rem; border-radius:10px; width:100%; max-height:240px; background:#000;"></video>
+          </div>
+
+          <div class="form-buttons">
+            <button type="button" class="btn-secondary prev-step-btn" data-prev="1">&larr; Back</button>
+            <button type="button" class="btn-primary next-step-btn" data-next="3">Next Step &rarr;</button>
+          </div>
+        </div>
+
+        <!-- Step 3: Identity Verification -->
+        <div class="form-step-content" id="step3">
+          <h2>Verification Documents</h2>
+          <p class="step-desc">Upload identity verification files for admin check</p>
+
+          <div class="input-group">
+            <label>Upload ID & Address Proof (Aadhaar, Voter ID, or Pan Card)</label>
+            <div class="file-upload-zone" id="docZone">
+              <span class="upload-icon">📄</span>
+              <p>Drag and drop documents here, or <span class="upload-link">browse</span></p>
+              <input type="file" id="documents" multiple style="display:none;">
+            </div>
+            <div class="uploaded-files-list" id="docFilesList"></div>
+          </div>
+
+          <div class="form-buttons">
+            <button type="button" class="btn-secondary prev-step-btn" data-prev="2">&larr; Back</button>
+            <button type="submit" class="btn-primary">Submit Application</button>
+          </div>
+        </div>
+
+      </form>
+    </div>
+  </section>
+
+  <!-- Available Investors Section -->
+  <section class="investors">
+    <div class="section-header">
+      <span class="section-subtitle">Micro-Lenders</span>
+      <h2>Registered Platform Investors</h2>
+      <p>These active lenders support women entrepreneurs in starting and growing micro-enterprises.</p>
+    </div>
+    <div class="investors-grid" id="investorsGrid">
+      <!-- Dynamically rendered -->
+    </div>
+  </section>
+
+  <!-- Success Popup Modal -->
+  <div class="modal" id="successModal">
+    <div class="modal-content glass-card">
+      <div class="modal-icon">🎉</div>
+      <h3>Application Submitted!</h3>
+      <p>Your microfinance application has been filed. Our system administrators will review your files and verify your video pitch shortly.</p>
+      <button class="btn-primary" id="closeModalBtn">Go to Portal Dashboard</button>
+    </div>
+  </div>
+
+  <!-- Core Scripts -->
+  <script src="store.js"></script>
+  <script src="navbar.js"></script>
+  
+  <!-- Page Logic script -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      // 1. Guard check: Must be user role
+      if (window.EH_DB) {
+        const currentUser = window.EH_DB.getCurrentUser();
+        if (!currentUser) {
+          alert("Access Denied: Please log in first.");
+          window.location.href = "login.html?role=user";
+          return;
+        } else if (currentUser.role !== "user") {
+          alert("Access Denied: You must login as an Entrepreneur to view this page.");
+          window.location.href = "login.html?role=user";
+          return;
+        }
+
+        // Fill user name in form
+        document.getElementById("fullName").value = currentUser.name || "";
+      }
+
+      // 2. Multi-step navigation
+      const nextBtns = document.querySelectorAll(".next-step-btn");
+      const prevBtns = document.querySelectorAll(".prev-step-btn");
+      const progressSteps = document.querySelectorAll(".progress-step");
+      const contents = document.querySelectorAll(".form-step-content");
+
+      nextBtns.forEach(btn => {
+        btn.addEventListener("click", () => {
+          // Check step 1 validation
+          const currentStep = btn.closest(".form-step-content");
+          const inputs = currentStep.querySelectorAll("input[required]");
+          let valid = true;
+          inputs.forEach(input => {
+            if (!input.value) {
+              input.reportValidity();
+              valid = false;
+            }
+          });
+
+          if (!valid) return;
+
+          const nextStepNum = btn.getAttribute("data-next");
+          
+          // Switch tab content
+          contents.forEach(c => c.classList.remove("active"));
+          document.getElementById(`step${nextStepNum}`).classList.add("active");
+
+          // Update Progress Indicator
+          progressSteps.forEach(s => {
+            const stepVal = parseInt(s.getAttribute("data-step"));
+            if (stepVal <= parseInt(nextStepNum)) {
+              s.classList.add("active");
+            } else {
+              s.classList.remove("active");
+            }
+          });
+        });
+      });
+
+      prevBtns.forEach(btn => {
+        btn.addEventListener("click", () => {
+          const prevStepNum = btn.getAttribute("data-prev");
+          contents.forEach(c => c.classList.remove("active"));
+          document.getElementById(`step${prevStepNum}`).classList.add("active");
+
+          progressSteps.forEach(s => {
+            const stepVal = parseInt(s.getAttribute("data-step"));
+            if (stepVal <= parseInt(prevStepNum)) {
+              s.classList.add("active");
+            } else {
+              s.classList.remove("active");
+            }
+          });
+        });
+      });
+
+      // 3. Document/Video upload area triggers
+      const videoZone = document.getElementById("videoZone");
+      const videoInput = document.getElementById("businessVideo");
+      const videoPreview = document.getElementById("videoPreview");
+
+      videoZone.addEventListener("click", () => videoInput.click());
+      videoInput.addEventListener("change", function() {
+        const file = this.files[0];
+        if (file) {
+          const url = URL.createObjectURL(file);
+          videoPreview.src = url;
+          videoPreview.style.display = "block";
+          videoZone.style.background = "rgba(16, 185, 129, 0.05)";
+          videoZone.querySelector("p").innerText = `Selected Video: ${file.name}`;
+        }
+      });
+
+      const docZone = document.getElementById("docZone");
+      const docInput = document.getElementById("documents");
+      const docFilesList = document.getElementById("docFilesList");
+
+      docZone.addEventListener("click", () => docInput.click());
+      docInput.addEventListener("change", function() {
+        docFilesList.innerHTML = "";
+        if (this.files.length > 0) {
+          docZone.style.background = "rgba(16, 185, 129, 0.05)";
+          docZone.querySelector("p").innerText = `${this.files.length} documents selected`;
+          
+          Array.from(this.files).forEach(f => {
+            const fileItem = document.createElement("div");
+            fileItem.className = "uploaded-file-item";
+            fileItem.innerHTML = `<span>📄 ${f.name}</span> <span class="file-size">(${(f.size/1024).toFixed(1)} KB)</span>`;
+            docFilesList.appendChild(fileItem);
+          });
+        }
+      });
+
+      // 4. Form Submit
+      const successModal = document.getElementById("successModal");
+      const formSection = document.getElementById("formSection");
+      const appStatusSection = document.getElementById("appStatusSection");
+
+      document.getElementById("multiStepForm").addEventListener("submit", (e) => {
+        e.preventDefault();
+        
+        if (window.EH_DB) {
+          const currentUser = window.EH_DB.getCurrentUser();
+          const newApp = {
+            id: "app_sania", // Match to profile
+            name: currentUser.name,
+            age: parseInt(document.getElementById("age").value),
+            location: document.getElementById("location").value,
+            funds: parseInt(document.getElementById("fundsNeeded").value),
+            idea: document.getElementById("businessIdea").value,
+            description: "Custom entrepreneur venture submitted via multi-step wizard.",
+            videoUrl: "uploads/sania_pitch.mp4"
+          };
+
+          window.EH_DB.addApplication(newApp);
+          
+          // Show modal
+          successModal.classList.add("active");
+        }
+      });
+
+      // Close modal & render status screen
+      document.getElementById("closeModalBtn").addEventListener("click", () => {
+        successModal.classList.remove("active");
+        renderDashboard();
+      });
+
+      // 5. Render dashboard based on application state
+      function renderDashboard() {
+        if (!window.EH_DB) return;
+
+        const apps = window.EH_DB.getApplications();
+        const currentUser = window.EH_DB.getCurrentUser();
+        
+        // Find application owned by this user (match by name or by Sania demo ID)
+        const currentName = (currentUser.name || "").toLowerCase();
+        const userApp = apps.find(a => a.name.toLowerCase() === currentName);
+
+        if (userApp) {
+          formSection.style.display = "none";
+          appStatusSection.style.display = "block";
+          
+          document.getElementById("appStatusBadge").className = `status-badge ${userApp.status}`;
+          document.getElementById("appStatusBadge").innerText = userApp.status;
+          document.getElementById("appDetailIdea").innerText = userApp.idea;
+          document.getElementById("appDetailFunds").innerText = `₹${userApp.funds.toLocaleString()}`;
+          document.getElementById("appDetailDate").innerText = userApp.appliedOn || "Today";
+          document.getElementById("appDetailInvestor").innerText = userApp.investorName || "Under Review";
+
+          // If application is funded, show repayment button
+          const actionContainer = document.getElementById("appStatusActions");
+          if (userApp.status === "funded") {
+            actionContainer.innerHTML = `
+              <a href="payment.html" class="btn-primary pulse-glow-anim">Make Loan Repayment</a>
+            `;
+          } else {
+            actionContainer.innerHTML = `
+              <p style="color: var(--text-muted); font-size: 0.9rem;">Your application details are published. Investors can fund it once verification completes.</p>
+            `;
+          }
+        } else {
+          formSection.style.display = "block";
+          appStatusSection.style.display = "none";
+        }
+      }
+
+      // 6. Available Investors rendering
+      function renderInvestors() {
+        if (!window.EH_DB) return;
+        const investors = window.EH_DB.getInvestors();
+        const container = document.getElementById("investorsGrid");
+        container.innerHTML = "";
+
+        investors.forEach(inv => {
+          const card = document.createElement("div");
+          card.className = "investor-card glass-card";
+          card.innerHTML = `
+            <div class="inv-head">
+              <h3>${inv.name}</h3>
+              <span class="inv-badge">Verified</span>
+            </div>
+            <p><strong>Focus Sector:</strong> ${inv.focus}</p>
+            <p class="desc-p">Provides mentorship, networking, and soft loan microfinance support.</p>
+            <button class="btn-primary apply-investor-btn" data-id="${inv.id}" data-name="${inv.name}">Pitch Project</button>
+          `;
+          container.appendChild(card);
+        });
+
+        // Click handler to pitch to specific investor
+        container.querySelectorAll(".apply-investor-btn").forEach(btn => {
+          btn.addEventListener("click", () => {
+            const apps = window.EH_DB.getApplications();
+            const currentUser = window.EH_DB.getCurrentUser();
+            const currentName2 = (currentUser.name || "").toLowerCase();
+            const userApp = apps.find(a => a.name.toLowerCase() === currentName2);
+
+            if (!userApp) {
+              alert("Please submit your application proposal form first before pitching to an investor.");
+              return;
+            }
+
+            const invName = btn.getAttribute("data-name");
+
+            // Assign investor
+            userApp.investorName = invName;
+            window.EH_DB.saveApplications(apps);
+            alert(`Project pitched to ${invName}! They will review your documentation and video pitch.`);
+            renderDashboard();
+          });
+        });
+      }
+
+      renderDashboard();
+      renderInvestors();
+    });
+  </script>
+</body>
+</html>

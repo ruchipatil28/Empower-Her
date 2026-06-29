@@ -1,0 +1,205 @@
+/* Process Timeline Specific Styles */
+
+.process-hero {
+  padding: 6rem 2rem 4rem 2rem;
+  background: radial-gradient(circle at 90% 80%, rgba(147, 51, 234, 0.04) 0%, rgba(255, 255, 255, 0) 50%),
+              linear-gradient(135deg, #ffffff 0%, #f5efff 100%);
+  text-align: center;
+}
+
+.hero-inner {
+  max-width: 700px;
+  margin: 0 auto;
+}
+
+.process-hero h1 {
+  font-size: 3rem;
+  color: var(--primary-dark);
+  margin-bottom: 1.5rem;
+}
+
+.process-hero p {
+  font-size: 1.2rem;
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+/* Timeline Layout */
+.process-timeline-section {
+  padding: 5rem 2rem;
+  background: var(--bg-white);
+}
+
+.timeline-container {
+  position: relative;
+  max-width: 1000px;
+  margin: 0 auto;
+}
+
+/* Vertical timeline vertical line */
+.timeline-line {
+  position: absolute;
+  left: 50%;
+  top: 0;
+  bottom: 0;
+  width: 4px;
+  background: linear-gradient(180deg, var(--primary) 0%, var(--secondary) 50%, var(--primary-light) 100%);
+  transform: translateX(-50%);
+  border-radius: var(--radius-full);
+  opacity: 0.8;
+}
+
+.timeline-item {
+  position: relative;
+  width: 100%;
+  margin-bottom: 4rem;
+  display: flex;
+}
+
+.timeline-item:last-child {
+  margin-bottom: 0;
+}
+
+/* Dot in the center */
+.timeline-dot {
+  position: absolute;
+  left: 50%;
+  top: 20px;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: var(--grad-primary);
+  color: var(--text-light);
+  font-family: 'Outfit', sans-serif;
+  font-weight: 700;
+  font-size: 1.2rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transform: translateX(-50%);
+  box-shadow: 0 0 0 6px rgba(109, 40, 217, 0.15);
+  z-index: 5;
+}
+
+/* Card panels */
+.timeline-card {
+  width: 44%;
+  padding: 2.25rem 2rem;
+  position: relative;
+  border-radius: var(--radius-md);
+}
+
+.timeline-card h3 {
+  font-size: 1.35rem;
+  color: var(--primary-dark);
+  margin-bottom: 0.85rem;
+}
+
+.timeline-card p {
+  color: var(--text-muted);
+  font-size: 0.95rem;
+  line-height: 1.6;
+}
+
+/* Left / Right Card positions */
+.timeline-item.left {
+  justify-content: flex-start;
+}
+
+.timeline-item.right {
+  justify-content: flex-end;
+}
+
+/* Connective Card Arrows (using pseudo-elements) */
+.timeline-item.left .timeline-card::after {
+  content: '';
+  position: absolute;
+  top: 30px;
+  right: -10px;
+  width: 20px;
+  height: 20px;
+  background: var(--glass-bg);
+  border-right: 1px solid var(--glass-border);
+  border-top: 1px solid var(--glass-border);
+  transform: rotate(45deg);
+  backdrop-filter: blur(12px);
+  z-index: -1;
+}
+
+.timeline-item.right .timeline-card::after {
+  content: '';
+  position: absolute;
+  top: 30px;
+  left: -10px;
+  width: 20px;
+  height: 20px;
+  background: var(--glass-bg);
+  border-left: 1px solid var(--glass-border);
+  border-bottom: 1px solid var(--glass-border);
+  transform: rotate(45deg);
+  backdrop-filter: blur(12px);
+  z-index: -1;
+}
+
+/* Process CTA */
+.process-cta {
+  padding: 6rem 2rem;
+  background: var(--grad-primary);
+  color: var(--text-light);
+  text-align: center;
+}
+
+.process-cta h2 {
+  font-size: 2.5rem;
+  color: var(--text-light);
+  margin-bottom: 1.5rem;
+}
+
+.process-cta p {
+  font-size: 1.15rem;
+  color: #f3e8ff;
+  max-width: 600px;
+  margin: 0 auto 2.5rem auto;
+}
+
+/* Responsive Styles */
+@media (max-width: 768px) {
+  .timeline-line {
+    left: 24px;
+    transform: none;
+  }
+
+  .timeline-dot {
+    left: 24px;
+    transform: translateX(-50%);
+  }
+
+  .timeline-item {
+    justify-content: flex-start !important;
+    padding-left: 60px;
+    margin-bottom: 3rem;
+  }
+
+  .timeline-card {
+    width: 100%;
+  }
+
+  .timeline-item.left .timeline-card::after,
+  .timeline-item.right .timeline-card::after {
+    left: -8px;
+    right: auto;
+    border-left: 1px solid var(--glass-border);
+    border-bottom: 1px solid var(--glass-border);
+    border-right: none;
+    border-top: none;
+  }
+}
+
+@media (max-width: 576px) {
+  .process-hero h1 {
+    font-size: 2.25rem;
+  }
+  .process-cta h2 {
+    font-size: 1.85rem;
+  }
+}

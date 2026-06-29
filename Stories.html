@@ -1,0 +1,196 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Success Stories - EmpowerHer</title>
+  <!-- SEO Meta Tags -->
+  <meta name="description" content="Read stories of inspiring women entrepreneurs who built successful businesses using microloans from EmpowerHer.">
+  
+  <!-- Styling -->
+  <link rel="stylesheet" href="global.css">
+  <link rel="stylesheet" href="navbar.css">
+  <link rel="stylesheet" href="stories.css">
+</head>
+<body>
+  <!-- Navbar -->
+  <nav class="navbar">
+    <div class="nav-container">
+      <a href="index.html" class="nav-logo">
+        <img src="Empower her.png" alt="EmpowerHer Logo">
+        <span>EmpowerHer</span>
+      </a>
+      <button class="nav-toggle" id="navToggle" aria-label="Toggle Navigation">
+        <span class="bar"></span>
+        <span class="bar"></span>
+        <span class="bar"></span>
+      </button>
+      <ul class="nav-menu" id="navMenu">
+        <li><a href="index.html" class="nav-link">Home</a></li>
+        <li><a href="About.html" class="nav-link">About</a></li>
+        <li><a href="Process.html" class="nav-link">Process</a></li>
+        <li><a href="Stories.html" class="nav-link">Stories</a></li>
+        <li id="nav-auth-container"><a href="login.html" class="btn-login">Log In</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  <section class="stories-hero">
+    <div class="hero-inner">
+      <span class="badge-tag">Inspiring Change</span>
+      <h1>Success Stories</h1>
+      <p>Meet the visionary women across India who turned micro-investments into sustainable enterprises, creating jobs and inspiring communities.</p>
+    </div>
+  </section>
+
+  <!-- Filter Category Tabs -->
+  <section class="filter-section">
+    <div class="filter-container">
+      <button class="filter-tab active" data-category="all">All Stories</button>
+      <button class="filter-tab" data-category="handicrafts">Handicrafts</button>
+      <button class="filter-tab" data-category="agriculture">Agriculture</button>
+      <button class="filter-tab" data-category="retail">Retail</button>
+      <button class="filter-tab" data-category="tailoring">Tailoring</button>
+    </div>
+  </section>
+
+  <!-- Stories Grid -->
+  <section class="stories-grid-section">
+    <div class="stories-grid" id="storiesGrid">
+      
+      <!-- Card 1 -->
+      <div class="story-card glass-card" data-category="handicrafts">
+        <div class="card-image-box">
+          <img src="seema.png" alt="Seema - Handicraft Business Owner">
+          <span class="category-badge">Handicrafts</span>
+        </div>
+        <div class="card-content">
+          <h3>Seema – Rajasthan</h3>
+          <p>With a small loan, Seema started her own handicraft business. Today, she employs five other women in her village, creating sustainable income for her community.</p>
+          <div class="funding-status">
+            <div class="progress-bar-container">
+              <div class="progress-bar-fill" style="width: 100%;"></div>
+            </div>
+            <div class="progress-labels">
+              <span>₹25,000 raised</span>
+              <span>100% Funded</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 2 -->
+      <div class="story-card glass-card" data-category="agriculture">
+        <div class="card-image-box">
+          <img src="ayesha.png" alt="Ayesha - Dairy Farm Expansion">
+          <span class="category-badge">Agriculture</span>
+        </div>
+        <div class="card-content">
+          <h3>Ayesha – Karnataka</h3>
+          <p>Ayesha used microfinance to expand her dairy farm. She now supplies milk to nearby towns and has doubled her family’s income, sending her children to school with pride.</p>
+          <div class="funding-status">
+            <div class="progress-bar-container">
+              <div class="progress-bar-fill" style="width: 100%;"></div>
+            </div>
+            <div class="progress-labels">
+              <span>₹40,000 raised</span>
+              <span>100% Funded</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 3 -->
+      <div class="story-card glass-card" data-category="retail">
+        <div class="card-image-box">
+          <img src="kavita.png" alt="Kavita - Vegetable Supplier">
+          <span class="category-badge">Retail</span>
+        </div>
+        <div class="card-content">
+          <h3>Kavita – Maharashtra</h3>
+          <p>From selling vegetables in a small stall, Kavita grew into a local supplier with the help of microfinance. She now mentors other women to follow the same path.</p>
+          <div class="funding-status">
+            <div class="progress-bar-container">
+              <div class="progress-bar-fill" style="width: 100%;"></div>
+            </div>
+            <div class="progress-labels">
+              <span>₹30,000 raised</span>
+              <span>100% Funded</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Card 4 -->
+      <div class="story-card glass-card" data-category="tailoring">
+        <div class="card-image-box">
+          <img src="meena.png" alt="Meena - Tailoring Boutique Owner">
+          <span class="category-badge">Tailoring</span>
+        </div>
+        <div class="card-content">
+          <h3>Meena – Uttar Pradesh</h3>
+          <p>Microfinance helped Meena purchase a sewing machine. She turned her tailoring skills into a successful business and now trains young girls in her village.</p>
+          <div class="funding-status">
+            <div class="progress-bar-container">
+              <div class="progress-bar-fill" style="width: 100%;"></div>
+            </div>
+            <div class="progress-labels">
+              <span>₹15,000 raised</span>
+              <span>100% Funded</span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- Call to Action -->
+  <section class="stories-cta">
+    <div class="cta-inner">
+      <h2>You Can Be Part of the Next Success Story</h2>
+      <p>Apply for funding or join as a micro-lender to help women build brighter futures.</p>
+      <a href="signup.html" class="btn-secondary">Get Started Now</a>
+    </div>
+  </section>
+
+  <!-- Interactive Filtering Script -->
+  <script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const tabs = document.querySelectorAll(".filter-tab");
+      const cards = document.querySelectorAll(".story-card");
+
+      tabs.forEach(tab => {
+        tab.addEventListener("click", () => {
+          // Toggle active class on tabs
+          tabs.forEach(t => t.classList.remove("active"));
+          tab.classList.add("active");
+
+          const category = tab.getAttribute("data-category");
+
+          // Filter cards
+          cards.forEach(card => {
+            const cardCat = card.getAttribute("data-category");
+            if (category === "all" || cardCat === category) {
+              card.style.display = "block";
+              // Trigger slight fade-in animation
+              card.style.opacity = "0";
+              setTimeout(() => {
+                card.style.transition = "opacity 0.4s ease";
+                card.style.opacity = "1";
+              }, 50);
+            } else {
+              card.style.display = "none";
+            }
+          });
+        });
+      });
+    });
+  </script>
+
+  <!-- Core Scripts -->
+  <script src="store.js"></script>
+  <script src="navbar.js"></script>
+</body>
+</html>
